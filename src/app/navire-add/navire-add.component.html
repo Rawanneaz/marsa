@@ -1,0 +1,17 @@
+<div class="container mt-4">
+  <h1>Add New Navire</h1>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Navire Name</label>
+      <input type="text" id="name" [(ngModel)]="navire.name" name="name" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="numeroEscale">Numero d'Escale</label>
+      <input type="text" id="numeroEscale" [(ngModel)]="navire.numeroEscale" name="numeroEscale" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Add Navire</button>
+  </form>
+</div>

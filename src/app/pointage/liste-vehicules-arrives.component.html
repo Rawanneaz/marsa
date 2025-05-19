@@ -1,0 +1,133 @@
+<div class="container p-4">
+  <h1 class="display-5 fw-bold mb-4">Liste des Véhicules Arrivés</h1>
+
+  <!-- Messages d'alerte -->
+  <div *ngIf="errorMessage" class="alert alert-danger mb-4">
+    <span class="fw-bold">Erreur :</span> {{ errorMessage }}
+  </div>
+  <div *ngIf="success" class="alert alert-success mb-4">
+    {{ success }}
+  </div>
+
+  <!-- Barre de filtrage -->
+  <div class="mb-4 d-flex align-items-center">
+    <input
+      type="text"
+      [(ngModel)]="filtreNumero"
+      (input)="appliquerFiltre()"
+      placeholder="Filtrer par numéro d'identification"
+      class="form-control me-2"
+      style="max-width: 400px;"
+    >
+    <button (click)="refreshList()" class="btn btn-primary">
+      <span *ngIf="!isLoading">Rafraîchir</span>
+      <span *ngIf="isLoading">Chargement...</span>
+    </button>
+  </div>
+
+  <!-- Tableau de véhicules -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Numéro d'identification</th>
+        <th>Date d'arrivée</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let vehicule of vehiculesFiltres">
+        <td>{{ vehicule.id }}</td>
+        <td>{{ vehicule.numeroIdentification }}</td>
+        <td>{{ vehicule.dateArrivee | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+            <span
+              [ngClass]="getStatutClass(vehicule.statut)"
+              class="badge"
+            >
+              {{ vehicule.statut }}
+            </span>
+        </td>
+        <td>
+          <div class="dropdown">
+            <button
+              (click)="toggleStatusMenu(vehicule.id)"
+              class="btn btn-secondary btn-sm dropdown-toggle"
+              type="button"
+            >
+              Actions
+            </button>
+            <div
+              *ngIf="activeDropdown === vehicule.id"
+              class="dropdown-menu show"
+            >
+              <!-- In liste-vehicules-arrives.component.html -->
+              <!-- In liste-vehicules-arrives.component.html -->
+              <button
+                (click)="ouvrirInventaire(vehicule.id, vehicule.numeroIdentification)"
+                class="dropdown-item d-flex align-items-center">
+                <span class="me-2">Inventaire</span>
+                <span *ngIf="vehicule.nbInventaires && vehicule.nbInventaires > 0"
+                      class="badge bg-info text-dark rounded-pill ms-auto">
+    {{ vehicule.nbInventaires }}
+  </span>
+              </button>
+              <div class="dropdown-divider"></div>
+              <button
+                *ngIf="vehicule.statut !== 'ARRIVÉ'"
+                (click)="changerStatut(vehicule, 'ARRIVÉ')"
+                class="dropdown-item"
+              >
+                Arrivé
+              </button>
+              <button
+                *ngIf="vehicule.statut !== 'EN_TRAITEMENT'"
+                (click)="changerStatut(vehicule, 'EN_TRAITEMENT')"
+                class="dropdown-item"
+              >
+                En traitement
+              </button>
+              <button
+                *ngIf="vehicule.statut !== 'EN_ATTENTE'"
+                (click)="changerStatut(vehicule, 'EN_ATTENTE')"
+                class="dropdown-item"
+              >
+                En attente
+              </button>
+              <button
+                *ngIf="vehicule.statut !== 'GARÉE'"
+                (click)="changerStatut(vehicule, 'GARÉE')"
+                class="dropdown-item"
+              >
+                Garée
+              </button>
+              <button
+                *ngIf="vehicule.statut !== 'LIBÉRÉ'"
+                (click)="changerStatut(vehicule, 'LIBÉRÉ')"
+                class="dropdown-item"
+              >
+                Libéré
+              </button>
+              <button
+                *ngIf="vehicule.statut !== 'SORTI'"
+                (click)="changerStatut(vehicule, 'SORTI')"
+                class="dropdown-item"
+              >
+                Sorti
+              </button>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="vehiculesFiltres.length === 0">
+        <td colspan="5" class="text-center text-muted py-4">
+          <div *ngIf="isLoading">Chargement des véhicules...</div>
+          <div *ngIf="!isLoading">Aucun véhicule ne correspond à votre recherche</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <h1>Liste des Navires</h1>
+
+  <!-- Button to toggle Add Navire form -->
+  <button class="btn btn-primary mb-3" (click)="toggleAddNavireForm()">
+    {{ isAddingNavire ? 'Annuler' : 'Ajouter Navire' }}
+  </button>
+
+  <!-- Add/Edit Navire Form -->
+  <div *ngIf="isAddingNavire" class="card mb-4">
+    <div class="card-header">
+      <h2>{{ isEditingNavire ? 'Modifier Navire' : 'Ajouter Navire' }}</h2>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group mb-3">
+          <label for="name">Nom du Navire</label>
+          <input type="text" id="name" [(ngModel)]="navire.name" name="name" class="form-control">
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="numeroEscale">Numero d'Escale</label>
+          <input type="text" id="numeroEscale" [(ngModel)]="navire.numeroEscale" name="numeroEscale" class="form-control">
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success">{{ isEditingNavire ? 'Mettre à jour' : 'Ajouter' }}</button>
+          <button type="button" *ngIf="isEditingNavire" class="btn btn-secondary" (click)="cancelEdit()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Error Modal Popup - Only shows for duplicate escale errors -->
+  <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showErrorModal}" style="background-color: rgba(0,0,0,0.5); z-index: 1060;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Erreur</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="closeErrorModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ errorMessage }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeErrorModal()">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navires Table -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Navires</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Numero d'Escale</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngIf="navires.length > 0; else noNavires">
+          <tr *ngFor="let navire of navires">
+            <td>{{ navire.name }}</td>
+            <td>{{ navire.numeroEscale }}</td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-primary" (click)="editNavire(navire)">Modifier</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteNavire(navire.id)">Supprimer</button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #noNavires>
+          <tr>
+            <td colspan="3" class="text-center">Aucun navire trouvé</td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

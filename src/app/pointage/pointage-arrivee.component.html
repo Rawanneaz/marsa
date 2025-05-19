@@ -1,0 +1,103 @@
+<div class="container p-4">
+  <h2 class="display-6 fw-bold mb-4">Pointage d'arrivée</h2>
+
+  <div *ngIf="message"
+       [ngClass]="{'alert-success': !isError, 'alert-danger': isError}"
+       class="alert">
+    {{ message }}
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      Nouvelle arrivée
+    </div>
+    <div class="card-body">
+      <form [formGroup]="arriveeForm" (ngSubmit)="onSubmit()">
+        <!-- Champ Numéro d'identification -->
+        <div class="mb-3">
+          <label for="numeroIdentification" class="form-label fw-bold">
+            Numéro d'identification (14 caractères)
+          </label>
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   id="numeroIdentification"
+                   formControlName="numeroIdentification"
+                   maxlength="14"
+                   [class.is-invalid]="arriveeForm.get('numeroIdentification')?.invalid &&
+                                     (arriveeForm.get('numeroIdentification')?.dirty ||
+                                      arriveeForm.get('numeroIdentification')?.touched)">
+            <button class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="activerScanner()">
+              <i class="bi bi-upc-scan"></i> Scanner
+            </button>
+          </div>
+          <div *ngIf="arriveeForm.get('numeroIdentification')?.errors?.['required'] &&
+                      arriveeForm.get('numeroIdentification')?.touched"
+               class="text-danger">
+            Le numéro est obligatoire
+          </div>
+          <div *ngIf="arriveeForm.get('numeroIdentification')?.errors?.['minlength'] &&
+                      arriveeForm.get('numeroIdentification')?.touched"
+               class="text-danger">
+            Exactement 14 caractères requis
+          </div>
+        </div>
+
+        <!-- Champ Date d'arrivée -->
+        <div class="mb-3">
+          <label for="dateArrivee" class="form-label fw-bold">
+            Date et heure d'arrivée
+          </label>
+          <input type="datetime-local"
+                 class="form-control"
+                 id="dateArrivee"
+                 formControlName="dateArrivee"
+                 [class.is-invalid]="arriveeForm.get('dateArrivee')?.invalid &&
+                                   arriveeForm.get('dateArrivee')?.touched">
+          <div *ngIf="arriveeForm.get('dateArrivee')?.errors?.['required']"
+               class="text-danger">
+            La date est obligatoire
+          </div>
+        </div>
+
+        <!-- Champ Opération (NOUVEAU) -->
+        <div class="mb-3">
+          <label for="operationId" class="form-label fw-bold">
+            Opération associée
+          </label>
+          <select class="form-select"
+                  id="operationId"
+                  formControlName="operationId"
+                  [class.is-invalid]="arriveeForm.get('operationId')?.invalid &&
+                                   arriveeForm.get('operationId')?.touched">
+            <option value="" disabled>-- Sélectionner une opération --</option>
+            <option *ngIf="loadingOperations" value="" disabled>Chargement des opérations...</option>
+            <option *ngFor="let operation of operations" [value]="operation.id">
+              {{ getOperationLabel(operation) }}
+            </option>
+          </select>
+          <div *ngIf="arriveeForm.get('operationId')?.errors?.['required'] &&
+                    arriveeForm.get('operationId')?.touched"
+               class="text-danger">
+            L'opération est obligatoire
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="d-grid gap-2">
+          <button type="submit"
+                  class="btn btn-success"
+                  [disabled]="submitting || arriveeForm.invalid">
+            <span *ngIf="!submitting">Enregistrer</span>
+            <span *ngIf="submitting">
+              <span class="spinner-border spinner-border-sm" role="status"></span>
+              Enregistrement...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

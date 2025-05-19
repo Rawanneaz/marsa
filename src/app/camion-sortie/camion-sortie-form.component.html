@@ -1,0 +1,131 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h2>{{ mode === 'create' ? 'Nouveau Camion de Sortie' : 'Modifier Camion de Sortie' }}</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="camionForm" (ngSubmit)="onSubmit()">
+        <!-- Informations de base du camion -->
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h4>Informations du Camion</h4>
+            <hr>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="matricule" class="form-label">Matricule du Camion *</label>
+            <input type="text" id="matricule" formControlName="matricule" class="form-control" placeholder="ex: 123456-AB-7">
+            <div *ngIf="camionForm.get('matricule')?.invalid && camionForm.get('matricule')?.touched" class="text-danger">
+              Matricule requis
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="chauffeur" class="form-label">Chauffeur *</label>
+            <input type="text" id="chauffeur" formControlName="chauffeur" class="form-control" placeholder="Nom du chauffeur">
+            <div *ngIf="camionForm.get('chauffeur')?.invalid && camionForm.get('chauffeur')?.touched" class="text-danger">
+              Chauffeur requis
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="clientId" class="form-label">Client</label>
+            <select id="clientId" formControlName="clientId" class="form-select">
+              <option [ngValue]="null">Sélectionner un client</option>
+              <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="dateSortie" class="form-label">Date de Sortie</label>
+            <input type="date" id="dateSortie" formControlName="dateSortie" class="form-control">
+          </div>
+          <div class="col-md-12 mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea id="notes" formControlName="notes" class="form-control" rows="3" placeholder="Notes supplémentaires..."></textarea>
+          </div>
+        </div>
+
+        <!-- Sélection des véhicules -->
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h4>Véhicules à Charger</h4>
+            <hr>
+          </div>
+
+          <!-- Recherche de véhicules -->
+          <div class="col-md-12 mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Rechercher un véhicule..." [(ngModel)]="rechercheTerm" [ngModelOptions]="{standalone: true}" (keyup)="filtrerVehicules()">
+              <button class="btn btn-outline-secondary" type="button">
+                <i class="fas fa-search"></i> Rechercher
+              </button>
+            </div>
+          </div>
+
+          <!-- Liste des véhicules disponibles -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                Véhicules Disponibles (Statut: GARE)
+              </div>
+              <!-- Modifiez cette partie dans votre template -->
+              <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                <div *ngIf="vehiculesFiltres.length === 0" class="text-center py-3">
+                  Aucun véhicule disponible trouvé
+                </div>
+                <div *ngFor="let vehicule of vehiculesFiltres" class="card mb-2">
+                  <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <strong>{{ vehicule.numeroIdentification }}</strong><br>
+                        <small>{{ vehicule.marque }} {{ vehicule.modele }}</small>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-success" (click)="ajouterVehicule(vehicule)">
+                        <i class="fas fa-plus"></i> Ajouter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Liste des véhicules sélectionnés -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                Véhicules Sélectionnés
+              </div>
+              <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                <div *ngIf="vehiculesSelectionnes.length === 0" class="text-center py-3">
+                  Aucun véhicule sélectionné
+                </div>
+                <div *ngFor="let vehicule of vehiculesSelectionnes" class="card mb-2">
+                  <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <strong>{{ vehicule.numeroIdentification }}</strong><br>
+                        <small>{{ vehicule.marque }} {{ vehicule.modele }}</small>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="retirerVehicule(vehicule)">
+                        <i class="fas fa-times"></i> Retirer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="row">
+          <div class="col-12 text-end">
+            <button type="button" class="btn btn-secondary me-2" routerLink="/camions-sortie">Annuler</button>
+            <button type="submit" class="btn btn-primary" [disabled]="camionForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ mode === 'create' ? 'Créer' : 'Mettre à jour' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

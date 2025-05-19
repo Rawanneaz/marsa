@@ -1,0 +1,137 @@
+<div class="container mt-4">
+  <h1>Liste des Opérations</h1>
+
+  <!-- Button to toggle Add Operation form -->
+  <button class="btn btn-primary mb-3" (click)="toggleAddOperationForm()">
+    {{ isAddingOperation ? 'Annuler' : 'Ajouter Opération' }}
+  </button>
+
+  <!-- Add/Edit Operation Form - Combined into one form with conditional labeling -->
+  <div *ngIf="isAddingOperation" class="card mb-4">
+    <div class="card-header">
+      <h2>{{ isEditingOperation ? 'Modifier Opération' : 'Ajouter Opération' }}</h2>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group mb-3">
+          <label for="dateOperation">Date d'opération</label>
+          <input type="date" class="form-control" id="dateOperation" name="dateOperation"
+                 [(ngModel)]="operation.dateOperation">
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="navire">Navire</label>
+          <select class="form-select" id="navire" name="navire"
+                  [(ngModel)]="operation.navire.id" (change)="onNavireChange(); checkNavireUsage()">
+            <option [ngValue]="undefined">Sélectionner un navire</option>
+            <option *ngFor="let navire of navires" [ngValue]="navire.id">
+              {{ navire.name }} - {{ navire.numeroEscale }}
+            </option>
+          </select>
+
+          <!-- Display selected navire info -->
+          <div *ngIf="selectedNavire" class="mt-2 text-info">
+            <small>Numéro d'escale sélectionné: <strong>{{ selectedNavire.numeroEscale }}</strong></small>
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="client">Client</label>
+          <select class="form-select" id="client" name="client"
+                  [(ngModel)]="operation.client.id">
+            <option [ngValue]="undefined">Sélectionner un client</option>
+            <option *ngFor="let client of clients" [ngValue]="client.id">
+              {{ client.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="connaissementsCount">Nombre de connaissements</label>
+          <input type="number" class="form-control" id="connaissementsCount" name="connaissementsCount"
+                 [(ngModel)]="operation.connaissementsCount" min="0">
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="carCount">Nombre de voitures</label>
+          <input type="number" class="form-control" id="carCount" name="carCount"
+                 [(ngModel)]="operation.carCount" min="0">
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success">
+            {{ isEditingOperation ? 'Mettre à jour' : 'Ajouter' }}
+          </button>
+          <button type="button" *ngIf="isEditingOperation" class="btn btn-secondary" (click)="cancelEdit()">
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Improved Error Modal Popup -->
+  <div class="modal" tabindex="-1" [ngClass]="{'show d-block': showErrorModal}" style="background-color: rgba(0,0,0,0.5); z-index: 1060;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Erreur</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="closeErrorModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ errorMessage }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeErrorModal()">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Operations Table -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Opérations</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Navire</th>
+          <th>Numéro d'escale</th>
+          <th>Client</th>
+          <th>Connaissements</th>
+          <th>Voitures</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngIf="operations.length > 0; else noOperations">
+          <tr *ngFor="let op of operations">
+            <ng-container *ngIf="op && op.dateOperation">
+              <td>{{ op.dateOperation | date:'dd/MM/yyyy' }}</td>
+              <td>{{ op.navire.name }}</td>
+              <td>{{ op.navire.numeroEscale }}</td>
+              <td>{{ op.client.name }}</td>
+              <td>{{ op.connaissementsCount }}</td>
+              <td>{{ op.carCount }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-primary" (click)="editOperation(op)">Modifier</button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteOperation(op.id)">Supprimer</button>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+        <ng-template #noOperations>
+          <tr>
+            <td colspan="7" class="text-center">Aucune opération trouvée</td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

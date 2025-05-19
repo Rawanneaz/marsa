@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <!-- Titre et boutons d'action -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Détails du Camion de Sortie</h2>
+    <div>
+      <button class="btn btn-secondary me-2" routerLink="/camions-sortie">
+        <i class="fas fa-arrow-left"></i> Retour
+      </button>
+      <button class="btn btn-primary me-2" [routerLink]="['/camions-sortie', camionId, 'edit']">
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+      <button class="btn btn-danger" (click)="confirmerSuppression()">
+        <i class="fas fa-trash"></i> Supprimer
+      </button>
+    </div>
+  </div>
+
+  <!-- Affichage des détails -->
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h3>Camion #{{ camionId }}</h3>
+    </div>
+    <div class="card-body">
+      <!-- Loader pendant le chargement -->
+      <div *ngIf="isLoading" class="d-flex justify-content-center mb-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+      </div>
+
+      <!-- Affichage des informations du camion -->
+      <div *ngIf="!isLoading && camion">
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h4>Informations du Camion</h4>
+            <hr>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Matricule:</strong> {{ camion.matricule }}</p>
+            <p><strong>Chauffeur:</strong> {{ camion.chauffeur }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Date de Sortie:</strong> {{ camion.dateSortie | date:'dd/MM/yyyy' }}</p>
+            <p><strong>Client:</strong> {{ camion.clientNom || 'Non spécifié' }}</p>
+          </div>
+          <div class="col-md-12">
+            <p><strong>Notes:</strong> {{ camion.notes || 'Aucune note' }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <h4>Véhicules Chargés ({{ !(camion.vehicules) || camion.vehicules.length || 0 }})</h4>          </div>
+
+          <!-- Message si aucun véhicule -->
+          <div *ngIf="!camion.vehicules || camion.vehicules.length === 0" class="col-12 text-center p-3">
+            <div class="alert alert-info">
+              Aucun véhicule chargé sur ce camion
+            </div>
+          </div>
+
+          <!-- Liste des véhicules -->
+          <div *ngFor="let vehicule of camion.vehicules" class="col-md-4 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ vehicule.numeroIdentification }}</h5>
+                <p class="card-text">
+                  <strong>Marque:</strong> {{ vehicule.marque || 'N/A' }}<br>
+                  <strong>Modèle:</strong> {{ vehicule.modele || 'N/A' }}<br>
+                  <strong>Couleur:</strong> {{ vehicule.couleur || 'N/A' }}<br>
+                  <strong>Année:</strong> {{ vehicule.annee || 'N/A' }}<br>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

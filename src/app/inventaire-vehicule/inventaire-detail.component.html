@@ -1,0 +1,148 @@
+<div class="container mt-4">
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+    <button (click)="loadData()" class="btn btn-sm btn-outline-danger ms-3">
+      Réessayer
+    </button>
+  </div>
+
+  <div *ngIf="inventaire">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Détails de l'inventaire</h2>
+      <button [routerLink]="['/vehicules', inventaire.vehiculeId]" class="btn btn-secondary">
+        Retour à la liste
+      </button>
+    </div>
+
+    <p class="text-muted">Effectué le {{ formatDate(inventaire.dateCreation) }}</p>
+
+    <div class="row mb-4">
+      <!-- Position information -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Position</h5>
+          </div>
+          <div class="card-body">
+            <ng-container *ngIf="inventaire.position && (inventaire.position.x !== undefined || inventaire.position.y !== undefined); else noPosition">
+              <p>
+                <strong>Niveau:</strong> {{ inventaire.position.niveau || 1 }}<br>
+                <strong>X:</strong> {{ inventaire.position.x }}<br>
+                <strong>Y:</strong> {{ inventaire.position.y }}
+              </p>
+              <p *ngIf="inventaire.position.statut" class="mt-2">
+                <span class="badge" [ngClass]="{'bg-success': inventaire.position.statut === 'OCCUPÉ', 'bg-warning': inventaire.position.statut === 'RÉSERVÉ', 'bg-secondary': inventaire.position.statut !== 'OCCUPÉ' && inventaire.position.statut !== 'RÉSERVÉ'}">
+                  {{ inventaire.position.statut }}
+                </span>
+              </p>
+            </ng-container>
+            <ng-template #noPosition>
+              <p class="text-muted">Aucune position enregistrée</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes information -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Notes générales</h5>
+          </div>
+          <div class="card-body">
+            <p>{{ inventaire.notesGenerales || 'Aucune note' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Accessories information -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Accessoires</h5>
+          </div>
+          <div class="card-body">
+            <div *ngIf="inventaire.accessoires && inventaire.accessoires.length > 0; else noAccessories">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>État</th>
+                  <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let acc of inventaire.accessoires">
+                  <td>{{ acc.nom }}</td>
+                  <td>
+                    <span [ngClass]="acc.present ? 'badge bg-success' : 'badge bg-danger'">
+                      {{ acc.present ? 'Présent' : 'Manquant' }}
+                    </span>
+                  </td>
+                  <td>{{ acc.description || '-' }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #noAccessories>
+              <p class="text-muted">Aucun accessoire enregistré</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Damages information -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Dégâts</h5>
+          </div>
+          <div class="card-body">
+            <div *ngIf="inventaire.degats && inventaire.degats.length > 0; else noDamages">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Emplacement</th>
+                  <th>Gravité</th>
+                  <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let deg of inventaire.degats">
+                  <td>{{ deg.emplacement }}</td>
+                  <td>
+                    <span [ngClass]="getGraviteClass(deg.gravite)" class="badge">
+                      {{ deg.gravite }}
+                    </span>
+                  </td>
+                  <td>{{ deg.description || '-' }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #noDamages>
+              <p class="text-muted">Aucun dégat enregistré</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button [routerLink]="['/inventaires/edit', inventaire.id]" class="btn btn-primary me-2">
+        Modifier
+      </button>
+      <button (click)="loadData()" class="btn btn-outline-secondary">
+        Rafraîchir
+      </button>
+    </div>
+  </div>
+</div>

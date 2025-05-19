@@ -1,0 +1,109 @@
+<div class="container mt-4">
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+    <button (click)="refreshInventaires()" class="btn btn-sm btn-outline-danger ms-3">
+      Réessayer
+    </button>
+  </div>
+
+  <div *ngIf="vehicule" class="card mb-4">
+    <div class="card-header">
+      <h2>Historique des Inventaires</h2>
+    </div>
+    <div class="card-body">
+      <h4>Véhicule: {{ vehicule.numeroIdentification }}</h4>
+      <p>
+        <span *ngIf="vehicule.marque">Marque: {{ vehicule.marque }}</span>
+        <span *ngIf="vehicule.marque && vehicule.modele"> | </span>
+        <span *ngIf="vehicule.modele">Modèle: {{ vehicule.modele }}</span>
+      </p>
+      <button class="btn btn-primary" (click)="createNewInventaire()">
+        Créer un Nouvel Inventaire
+      </button>
+      <button (click)="refreshInventaires()" class="btn btn-secondary ms-2">
+        Actualiser la liste
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3>Liste des Inventaires</h3>
+      <span class="badge bg-primary">{{ inventaires.length }} inventaire(s)</span>
+    </div>
+    <div class="card-body">
+      <div *ngIf="!isLoading && inventaires.length === 0" class="alert alert-info">
+        Aucun inventaire trouvé pour ce véhicule.
+      </div>
+
+      <div *ngFor="let inventaire of inventaires | orderBy: 'dateCreation':true" class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5>Inventaire du {{ inventaire.dateCreation | date:'medium' }}</h5>
+          <div>
+            <a [routerLink]="['/inventaires', inventaire.id]"
+               class="btn btn-sm btn-info me-2">
+              Détails
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6>Position</h6>
+              <ng-container *ngIf="inventaire.position !== null && inventaire.position !== undefined; else noPosition">
+                <p>
+                  Position:
+                  <span class="text-muted">
+                    Niveau {{ inventaire.position!.niveau }},
+                    X: {{ inventaire.position!.x }},
+                    Y: {{ inventaire.position!.y }}
+                  </span>
+                </p>
+              </ng-container>
+              <ng-template #noPosition>
+                <p class="text-muted">Aucune position attribuée</p>
+              </ng-template>
+            </div>
+            <div class="col-md-6">
+              <h6>Notes</h6>
+              <p>{{ inventaire.notesGenerales || 'Aucune note' }}</p>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <h6>Accessoires</h6>
+              <ul *ngIf="inventaire.accessoires && inventaire.accessoires.length > 0; else noAccessories">
+                <li *ngFor="let accessoire of inventaire.accessoires">
+                  {{ accessoire.nom }} - {{ accessoire.present ? 'Présent' : 'Manquant' }}
+                </li>
+              </ul>
+              <ng-template #noAccessories>
+                <p>Aucun accessoire enregistré</p>
+              </ng-template>
+            </div>
+            <div class="col-md-6">
+              <h6>Dégâts</h6>
+              <ul *ngIf="inventaire.degats && inventaire.degats.length > 0; else noDamages">
+                <li *ngFor="let degat of inventaire.degats">
+                  {{ degat.emplacement }} ({{ degat.gravite }})
+                </li>
+              </ul>
+              <ng-template #noDamages>
+                <p>Aucun dégat enregistré</p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-muted">
+          Version créée le {{ inventaire.dateCreation | date:'medium' }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

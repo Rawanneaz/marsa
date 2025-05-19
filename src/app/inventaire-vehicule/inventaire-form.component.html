@@ -1,0 +1,135 @@
+<div class="container mt-4">
+  <h2>Créer un Inventaire</h2>
+
+  <!-- Position Assignment Status -->
+  <div *ngIf="isAssigningPosition" class="alert alert-info mb-3">
+    <span class="spinner-border spinner-border-sm"></span> Attribution de position en cours...
+  </div>
+
+  <div *ngIf="assignedPosition" class="alert alert-success mb-3">
+    <h5>Position attribuée</h5>
+    <p class="mb-1">Niveau: {{ assignedPosition.niveau }} | Coordonnées: ({{ assignedPosition.x }}, {{ assignedPosition.y }})</p>
+    <p class="mb-0" *ngIf="assignedPosition.vehiculeNumeroIdentification">
+      Véhicule: {{ assignedPosition.vehiculeNumeroIdentification }}
+    </p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="inventaireForm" (ngSubmit)="onSubmit()">
+    <!-- Vehicle Selection -->
+    <div class="mb-3">
+      <label for="vehiculeId" class="form-label">Véhicule</label>
+      <select class="form-select" id="vehiculeId" formControlName="vehiculeId"
+              [disabled]="isLoading || isAssigningPosition">
+        <option value="">Sélectionner un véhicule</option>
+        <option *ngFor="let vehicule of vehicules" [value]="vehicule.id">
+          {{ vehicule.numeroIdentification }} - {{ vehicule.marque }} {{ vehicule.modele }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Position Change Option -->
+    <div class="mb-3" *ngIf="hasExistingPosition && selectedVehiculeId">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="changerPosition"
+               formControlName="changerPosition" [disabled]="isLoading || isAssigningPosition">
+        <label class="form-check-label" for="changerPosition">
+          Changer la position actuelle du véhicule
+        </label>
+      </div>
+      <small class="text-muted">Si coché, une nouvelle position sera attribuée automatiquement</small>
+    </div>
+
+    <!-- General Notes -->
+    <div class="mb-3">
+      <label for="notesGenerales" class="form-label">Notes Générales</label>
+      <textarea class="form-control" id="notesGenerales"
+                formControlName="notesGenerales" rows="3" [disabled]="isLoading"></textarea>
+    </div>
+
+    <!-- Accessories Section -->
+    <div class="mb-4">
+      <h4>Accessoires</h4>
+      <button type="button" class="btn btn-sm btn-primary mb-2"
+              (click)="addAccessoire()" [disabled]="isLoading">
+        Ajouter Accessoire
+      </button>
+
+      <div formArrayName="accessoires">
+        <div *ngFor="let accessoire of accessoires.controls; let i = index" [formGroupName]="i" class="card mb-2">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-control" formControlName="nom" [disabled]="isLoading">
+              </div>
+              <div class="col-md-2">
+                <div class="form-check form-switch mt-4">
+                  <input class="form-check-input" type="checkbox" id="present{{i}}"
+                         formControlName="present" [disabled]="isLoading">
+                  <label class="form-check-label" for="present{{i}}">Présent</label>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-control" formControlName="description" [disabled]="isLoading">
+              </div>
+              <div class="col-md-1 d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-danger"
+                        (click)="removeAccessoire(i)" [disabled]="isLoading">X</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Damages Section -->
+    <div class="mb-4">
+      <h4>Dégâts</h4>
+      <button type="button" class="btn btn-sm btn-primary mb-2"
+              (click)="addDegat()" [disabled]="isLoading">
+        Ajouter Dégât
+      </button>
+
+      <div formArrayName="degats">
+        <div *ngFor="let degat of degats.controls; let i = index" [formGroupName]="i" class="card mb-2">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <label class="form-label">Emplacement</label>
+                <input type="text" class="form-control" formControlName="emplacement" [disabled]="isLoading">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Gravité</label>
+                <select class="form-select" formControlName="gravite" [disabled]="isLoading">
+                  <option value="LÉGER">Léger</option>
+                  <option value="MOYEN">Moyen</option>
+                  <option value="GRAVE">Grave</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-control" formControlName="description" [disabled]="isLoading">
+              </div>
+              <div class="col-md-1 d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-danger"
+                        (click)="removeDegat(i)" [disabled]="isLoading">X</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary"
+            [disabled]="!inventaireForm.valid || isLoading">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+      Enregistrer
+    </button>
+  </form>
+</div>

@@ -1,0 +1,75 @@
+<header class="bg-primary text-white p-3">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <img src="assets/logo.png" alt="Logo" width="50" height="auto">
+      <nav>
+        <!-- Client Dropdown -->
+        <div class="dropdown d-inline-block mx-3">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="clientDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Clients
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="clientDropdown">
+            <li><a class="dropdown-item" routerLink="/clients">Liste des Clients</a></li>
+            <li><a class="dropdown-item" routerLink="/clients/new">Ajouter Client</a></li>
+          </ul>
+        </div>
+
+        <!-- Navire Dropdown -->
+        <div class="dropdown d-inline-block mx-3">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="navireDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Navires
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navireDropdown">
+            <li><a class="dropdown-item" routerLink="/navires">Liste des Navires</a></li>
+            <li><a class="dropdown-item" routerLink="/navires/new">Ajouter Navire</a></li>
+          </ul>
+        </div>
+
+        <!-- Operation Dropdown -->
+        <div class="dropdown d-inline-block mx-3">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="operationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Operations
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="operationDropdown">
+            <li><a class="dropdown-item" routerLink="/operations">Liste des Operations</a></li>
+            <li><a class="dropdown-item" routerLink="/operations/new">Ajouter Operation</a></li>
+          </ul>
+        </div>
+
+        <!-- Pointage Dropdown -->
+        <div class="dropdown d-inline-block mx-3">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="pointageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Pointage
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="pointageDropdown">
+            <li><a class="dropdown-item" routerLink="/pointage-arrivee">Pointage Arrivée</a></li>
+            <li><a class="dropdown-item" routerLink="/vehicules/arrives">Véhicules Arrivés</a></li>
+          </ul>
+        </div>
+
+        <!-- Inventaire Dropdown -->
+        <div class="dropdown d-inline-block mx-3">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="inventaireDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Inventaire
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="inventaireDropdown">
+            <li><a class="dropdown-item" routerLink="/inventaires/nouveau">Liste des Inventaires</a></li>
+            <li><a class="dropdown-item" routerLink="/historique">Historique des Inventaires</a></li>
+          </ul>
+        </div>
+
+        <!-- Parking Dropdown -->
+        <div class="dropdown d-inline-block mx-3">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="parkingDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Parking
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="parkingDropdown">
+            <li><a class="dropdown-item" routerLink="/parking/management">Gestion du Parking</a></li>
+            <li><a class="dropdown-item" routerLink="/parking-3d">Visualisation 2D</a></li>
+            <li><a class="dropdown-item" routerLink="/parking/visualisation-3d">Visualisation 3D</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>

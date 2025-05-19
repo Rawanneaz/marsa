@@ -1,0 +1,93 @@
+<div class="container-fluid mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h2>Visualisation 3D du Parking</h2>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-9">
+          <div #rendererContainer class="renderer-container"></div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-header bg-info text-white">
+              Détails de la Position
+            </div>
+            <div class="card-body">
+              <div *ngIf="!selectedPosition" class="alert alert-info">
+                Cliquez sur une position pour voir les détails
+              </div>
+              <div *ngIf="selectedPosition" class="selected-position-info">
+                <h5>Position #{{selectedPosition.id}}</h5>
+                <p><strong>Niveau:</strong> {{selectedPosition.niveau}}</p>
+                <p><strong>Coordonnées:</strong> ({{selectedPosition.x}}, {{selectedPosition.y}})</p>
+                <p>
+                  <strong>Statut:</strong>
+                  <span [ngClass]="{
+                    'badge bg-success': selectedPosition.statut === 'DISPONIBLE',
+                    'badge bg-danger': selectedPosition.statut === 'OCCUPEE',
+                    'badge bg-warning': selectedPosition.statut === 'RESERVEE',
+                    'badge bg-secondary': selectedPosition.statut === 'MAINTENANCE'
+                  }">
+                    {{selectedPosition.statut}}
+                  </span>
+                </p>
+
+                <div *ngIf="selectedPosition.vehiculeId" class="vehicle-info mt-3">
+                  <h6>Véhicule stationné</h6>
+                  <p><strong>ID:</strong> {{selectedPosition.vehiculeId}}</p>
+                  <p *ngIf="selectedPosition.vehiculeNumeroIdentification">
+                    <strong>Numéro:</strong> {{selectedPosition.vehiculeNumeroIdentification}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-header bg-secondary text-white">
+              Légende
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-2">
+                <div class="legend-box available"></div>
+                <span class="ms-2">Disponible</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <div class="legend-box occupied"></div>
+                <span class="ms-2">Occupée</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <div class="legend-box reserved"></div>
+                <span class="ms-2">Réservée</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <div class="legend-box maintenance"></div>
+                <span class="ms-2">Maintenance</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="legend-box car"></div>
+                <span class="ms-2">Véhicule</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-header bg-success text-white">
+              Actions
+            </div>
+            <div class="card-body">
+              <button class="btn btn-primary" (click)="refreshParkingData()">
+                <i class="fas fa-sync-alt"></i> Actualiser
+              </button>
+              <button class="btn btn-success mt-2" (click)="assignRandomPosition()"
+                      *ngIf="selectedPosition?.statut === 'DISPONIBLE'">
+                <i class="fas fa-car"></i> Assigner un véhicule
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

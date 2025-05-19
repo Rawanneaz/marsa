@@ -1,0 +1,36 @@
+<div class="container mt-4">
+  <h1>Creer une operation</h1>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="dateOperation">Date d'Operation</label>
+      <input type="date" id="dateOperation" [(ngModel)]="operation.dateOperation" name="dateOperation" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="navire">Navire</label>
+      <select id="navire" [(ngModel)]="operation.navire.id" name="navire" class="form-control" required>
+        <option *ngFor="let navire of navires" [value]="navire.id">{{ navire.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="client">Client</label>
+      <select id="client" [(ngModel)]="operation.client.id" name="client" class="form-control" required>
+        <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="connaissementsCount">Nombre de connaissement </label>
+      <input type="number" id="connaissementsCount" [(ngModel)]="operation.connaissementsCount" name="connaissementsCount" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="carCount">Nombre de voiture par connaissement</label>
+      <input type="number" id="carCount" [(ngModel)]="operation.carCount" name="carCount" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Ajouter operation</button>
+  </form>
+</div>
